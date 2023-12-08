@@ -11,7 +11,7 @@
       <ul class="absolute bg-weather-secondary text-white w-full py-2 px-1 top-[66px]" v-if="mapBoxSearchResults">
         <p class="py-2" v-if="!searchError && mapBoxSearchResults.length === 0">No results match</p>
         <li v-for="searchResult in mapBoxSearchResults" :key="searchResult.id" class="cursor-pointer py-1 px-1 hover:bg-slate-500" 
-        @click="searchQuery = searchResult.place_name">
+        @click="previewCity(searchResult)">
           {{ searchResult.place_name }}
         </li>
       </ul>
@@ -23,7 +23,9 @@
 <script setup>
 import { ref } from 'vue';
 import axios from "axios";
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 
 const mapboxAPIKey =
   "pk.eyJ1Ijoiam9obmtvbWFybmlja2kiLCJhIjoiY2t5NjFzODZvMHJkaDJ1bWx6OGVieGxreSJ9.IpojdT3U3NENknF6_WhR2Q";
@@ -38,17 +40,31 @@ const getSearchResult = () => {
       if(searchQuery !== "") {
         try {
           const result = await axios.get(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}.json?access_token=${mapboxAPIKey}&types=place`
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}.json?access_token=${mapboxAPIKey}&types=locality`
           );
           mapBoxSearchResults.value = result.data.features;
-          console.log(mapBoxSearchResults.value)
-          return;
         } catch {
           searchError.value = true;
         }
-        
+        return;
       }
       mapBoxSearchResults.value = null;
     }, 300);
+    console.log(queryTimeout.value)
+}
+
+const previewCity = (searchResult) => {
+  console.log(searchResult)
+  const [city, state] = searchResult.place_name.split(',')
+  router.push({
+    name: "cityView",
+    params: { state: state.replaceAll(" ", ""), city: city },
+    query: {
+      lat: searchResult.geometry.coordinates[1],
+      lng: searchResult.geometry.coordinates[0],
+      preview: true,
+    }
+  });
+  console.log(city, state)
 }
 </script>

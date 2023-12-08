@@ -1,6 +1,6 @@
 <template>
     <Teleport to="body">
-        <transition name="modal-outer">
+        <transition name="modal-outer" @click.self="$emit('close-modal')">
             <div v-if="modalActive" class="absolute w-full bg-black bg-opacity-30 h-screen
             top-0 left-0 flex justify-center px-8">
                 <transition name="modal-inner">
