@@ -50,11 +50,9 @@ const getSearchResult = () => {
       }
       mapBoxSearchResults.value = null;
     }, 300);
-    console.log(queryTimeout.value)
 }
 
 const previewCity = (searchResult) => {
-  console.log(searchResult)
   const [city, state] = searchResult.place_name.split(',')
   router.push({
     name: "cityView",
