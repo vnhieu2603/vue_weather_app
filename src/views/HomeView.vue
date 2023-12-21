@@ -72,6 +72,7 @@ const previewCity = (searchResult) => {
       preview: true,
     }
   });
+  console.log(searchResult)
   console.log(city, state)
 }
 </script>
